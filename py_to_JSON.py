@@ -5,36 +5,52 @@ import json
 
 def extract_sql_queries(source: str) -> list:
     """Extract SQL strings using regex (handles multi-line SQL)."""
+    # Find triple quoted strings, then find sql pattern in those.
     sql_pattern = re.compile(
-        r'(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|WITH)[\s\S]+?(?="""\'\'\'|$)',
+        r'\b(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|WITH)\b[\s\S]+?(?="""|\'\'\' |$)',
         re.IGNORECASE
     )
-    # Find all triple-quoted strings containing SQL
+
+    # Find all triple-quoted strings
     strings = re.findall(r'"""([\s\S]*?)"""|\'\'\'([\s\S]*?)\'\'\'', source)
+
     sql_queries = []
     for s in strings:
-        content = s[0] or s[1]
-        if re.search(r'\b(SELECT|INSERT|UPDATE|DELETE|WITH)\b', content, re.IGNORECASE):
+        content = s[0] or s[1] # triple quotes query or triple single quotes, whatever is present.
+        # Now actually USE sql_pattern instead of a redundant re.search
+        match = sql_pattern.search(content)
+        if match:
             sql_queries.append(content.strip())
+
     return sql_queries
 
 
 def extract_airflow_metadata(source: str) -> dict:
     """Extract DAG id, schedule, tasks, operators."""
     metadata = {
-        "dag_id": None,
-        "schedule_interval": None,
+        "dag": [],
+        "schedule_interval": [],
         "operators_used": [],
-        "tasks": []
+        "task_id": []
     }
-
+    """
     # DAG id
-    dag_id_match = re.search(r'dag_id\s*=\s*["\'](.+?)["\']', source)
-    if dag_id_match:
-        metadata["dag_id"] = dag_id_match.group(1)
+    #dag_match = re.search(r'dag\s*=\s*["\'](.+?)["\']', source)
+    dag_match = re.search(r'\bdag\s*=\s*([a-zA-Z_][a-zA-Z0-9_]*)\b', source)
+    if dag_match:
+        metadata["dag"] = dag_match.group(1)
+    """
+    tree = ast.parse(source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            for kw in node.keywords:
+                if kw.arg == "dag":
+                    if isinstance(kw.value, ast.Name):
+                        metadata["dag"] = kw.value.id
 
     # Schedule
-    schedule_match = re.search(r'schedule_interval\s*=\s*["\'](.+?)["\']', source)
+    #schedule_match = re.search(r'schedule_interval\s*=\s*["\'](.+?)["\']', source)
+    schedule_match = re.search(r'\bschedule_interval\s*=\s*([a-zA-Z_][a-zA-Z0-9_]*)\b', source)
     if schedule_match:
         metadata["schedule_interval"] = schedule_match.group(1)
 
@@ -42,6 +58,10 @@ def extract_airflow_metadata(source: str) -> dict:
     operators = re.findall(r'from airflow\.operators\.\S+ import (\w+)', source)
     operators += re.findall(r'from airflow\.providers\.\S+ import (\w+)', source)
     metadata["operators_used"] = list(set(operators))
+
+    # task id
+    task_id_match = re.findall(r'task_id\s*=\s*["\'](.+?)["\']', source)
+    metadata["task_id"] = list(set(task_id_match))
 
     return metadata
 
@@ -96,6 +116,6 @@ def script_to_json(file_path: str) -> dict:
     return structured
 
 # Run it
-result = script_to_json("my_dag.py")
+result = script_to_json("source/CUSTOMER.py")
 print(json.dumps(result, indent=2))
 
