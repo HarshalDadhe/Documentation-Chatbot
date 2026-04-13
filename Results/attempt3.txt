@@ -1,0 +1,100 @@
+Airflow DAG Documentation
+-------------------------
+
+Introduction
+------------
+
+This Airflow DAG is responsible for loading data into a PostgreSQL database from a CSV file. The DAG consists of two tasks: `load_data` and `transform_data`. The `load_data` task loads the data from the CSV file into a temporary table, while the `transform_data` task transforms the data into a more useful format by adding additional columns and removing unnecessary ones.
+
+Tasks
+-----
+
+### 1. Load Data
+
+#### Function: load_data
+
+The `load_data` function is responsible for loading the data from the CSV file into a temporary table in the PostgreSQL database. The function takes no arguments and has no output.
+
+SQL Query
+----------
+
+The SQL query used to create the temporary table is as follows:
+```sql
+CREATE TABLE IF NOT EXISTS booking_record (
+    client_id INTEGER NOT NULL,
+    booking_date TEXT NOT NULL,
+    room_type TEXT(512) NOT NULL,
+    hotel_id INTEGER NOT NULL,
+    booking_cost NUMERIC,
+    currency TEXT,
+    age INTEGER,
+    client_name TEXT(512),
+    client_type TEXT(512),
+    hotel_name TEXT(512)
+);
+```
+This query creates a table named `booking_record` if it does not already exist. The table has the following columns:
+
+* `client_id`: an integer column that represents the unique identifier of the client.
+* `booking_date`: a text column that represents the date of the booking.
+* `room_type`: a text column that represents the type of room booked (e.g., single, double, suite).
+* `hotel_id`: an integer column that represents the unique identifier of the hotel where the booking was made.
+* `booking_cost`: a numeric column that represents the cost of the booking in the currency specified by the `currency` column.       
+* `currency`: a text column that represents the currency used for the booking (e.g., USD, EUR).
+* `age`: an integer column that represents the age of the client making the booking.
+* `client_name`: a text column that represents the name of the client making the booking.
+* `client_type`: a text column that represents the type of client (e.g., individual, corporate).
+* `hotel_name`: a text column that represents the name of the hotel where the booking was made.
+
+### 2. Transform Data
+
+#### Function: transform_data
+
+The `transform_data` function is responsible for transforming the data in the temporary table into a more useful format by adding additional columns and removing unnecessary ones. The function takes no arguments and has no output.
+
+SQL Query
+----------
+
+The SQL query used to transform the data is as follows:
+```sql
+SELECT
+    client_id,
+    booking_date,
+    room_type,
+    hotel_id,
+    booking_cost,
+    currency,
+    age,
+    client_name,
+    client_type,
+    hotel_name
+FROM booking_record;
+```
+This query selects all the columns from the `booking_record` table and returns them in a new table with the same structure. The resulting table has the following columns:
+
+* `client_id`: an integer column that represents the unique identifier of the client.
+* `booking_date`: a text column that represents the date of the booking.
+* `room_type`: a text column that represents the type of room booked (e.g., single, double, suite).
+* `hotel_id`: an integer column that represents the unique identifier of the hotel where the booking was made.
+* `booking_cost`: a numeric column that represents the cost of the booking in the currency specified by the `currency` column.       
+* `currency`: a text column that represents the currency used for the booking (e.g., USD, EUR).
+* `age`: an integer column that represents the age of the client making the booking.
+* `client_name`: a text column that represents the name of the client making the booking.
+* `client_type`: a text column that represents the type of client (e.g., individual, corporate).
+* `hotel_name`: a text column that represents the name of the hotel where the booking was made.
+
+Conclusion
+----------
+
+In conclusion, this Airflow DAG consists of two tasks: `load_data` and `transform_data`. The `load_data` task loads the data from the CSV file into a temporary table in the PostgreSQL database, while the `transform_data` task transforms the data into a more useful format by adding additional columns and removing unnecessary ones. The resulting table has the following structure:
+
+* `client_id`: an integer column that represents the unique identifier of the client.
+* `booking_date`: a text column that represents the date of the booking.
+* `room_type`: a text column that represents the type of room booked (e.g., single, double, suite).
+* `hotel_id`: an integer column that represents the unique identifier of the hotel where the booking was made.
+* `booking_cost`: a numeric column that represents the cost of the booking in the currency specified by the `currency` column.       
+* `currency`: a text column that represents the currency used for the booking (e.g., USD, EUR).
+* `age`: an integer column that represents the age of the client making the booking.
+* `client_name`: a text column that represents the name of the client making the booking.
+* `client_type`: a text column that represents the type of client (e.g., individual, corporate).
+* `hotel_name`: a text column that represents the name of the hotel where the booking was made.

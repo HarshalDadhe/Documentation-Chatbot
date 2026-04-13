@@ -1,0 +1,41 @@
+Airflow DAG Documentation
+-----------------------
+
+This Airflow DAG is designed to load data from a database into a data warehouse using a specific schema. The DAG consists of two tasks: `load_data` and `transform_data`.
+
+1. `load_data`: This task reads the data from the source database and loads it into the target data warehouse. The SQL query used to load the data is as follows:
+```sql
+CREATE TABLE IF NOT EXISTS booking_record (
+    client_id INTEGER NOT NULL,
+    booking_date TEXT NOT NULL,
+    room_type TEXT(512) NOT NULL,
+    hotel_id INTEGER NOT NULL,
+    booking_cost NUMERIC,
+    currency TEXT,
+    age INTEGER,
+    client_name TEXT(512),
+    client_type TEXT(512),
+    hotel_name TEXT(512)
+);
+```
+This query creates a table called `booking_record` in the target data warehouse if it does not already exist. The columns of the table are defined as follows:
+
+* `client_id`: An integer column that represents the unique identifier for each client.
+* `booking_date`: A text column that stores the date of the booking.
+* `room_type`: A text column that stores the type of room booked (e.g., single, double, etc.).
+* `hotel_id`: An integer column that represents the unique identifier for each hotel.
+* `booking_cost`: A numeric column that stores the total cost of the booking in a specific currency.
+* `currency`: A text column that stores the currency used to pay for the booking.
+* `age`: An integer column that stores the age of the client at the time of booking.
+* `client_name`: A text column that stores the name of the client.
+* `client_type`: A text column that stores the type of client (e.g., individual, business, etc.).
+* `hotel_name`: A text column that stores the name of the hotel where the booking was made.
+2. `transform_data`: This task transforms the data loaded by the `load_data` task into a more structured format for further analysis. The SQL query used to transform the data is as follows:
+```sql
+SELECT client_id, booking_date, room_type, hotel_id, booking_cost, currency, age, client_name, client_type, hotel_name
+FROM booking_record;
+```
+This query selects all columns from the `booking_record` table and returns them in a structured format for further analysis. The transformed data is stored in the same table as the original data.
+
+Conclusion:
+The Airflow DAG described above consists of two tasks: `load_data` and `transform_data`. The `load_data` task reads the data from the source database and loads it into the target data warehouse using a specific schema. The `transform_data` task transforms the loaded data into a more structured format for further analysis. The resulting data is stored in the same table as the original data.       

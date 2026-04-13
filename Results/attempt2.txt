@@ -1,0 +1,41 @@
+DAG Documentation:
+-----------------
+
+Introduction:
+--------------
+
+This DAG is responsible for loading data into the database from a CSV file. It consists of two tasks: `load_data` and `transform_data`. The `load_data` task loads the data from the CSV file, while the `transform_data` task transforms the data into a more structured format before loading it into the database.
+
+Tasks:
+-------
+
+### 1. Load Data
+
+Task ID: load_data
+
+* Description: Loads the data from the CSV file into the database.
+* Input: The CSV file path is specified in the `dag` object.
+* Output: The transformed data is stored in the `booking_record` table.
+* SQL Query:
+
+CREATE TABLE IF NOT EXISTS booking_record (
+                    client_id INTEGER NOT NULL,
+                    booking_date TEXT NOT NULL,
+                    room_type TEXT(512) NOT NULL,
+                    hotel_id INTEGER NOT NULL,
+                    booking_cost NUMERIC,
+                    currency TEXT,
+                    age INTEGER,
+                    client_name TEXT(512),
+                    client_type TEXT(512),
+                    hotel_name TEXT(512)
+                );
+
+### 2. Transform Data
+
+Task ID: transform_data
+
+* Description: Transforms the data into a more structured format before loading it into the database.
+* Input: The transformed data is stored in the `booking_record` table.
+* Output: The transformed data is stored in the `booking_record` table with a more structured format.
+* SQL Query: N/A (No further SQL queries are needed for this task)
