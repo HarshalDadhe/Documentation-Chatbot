@@ -1,0 +1,8 @@
+
+[Document(metadata={'section': 'dag_overview'}, page_content='DAG: ingestion_dag\nSchedule: timedelta\nOperators: PythonOperator'), 
+
+Document(metadata={'section': 'function', 'name': 'transform_data'}, page_content='Function: transform_data\nArgs: []\nDocstring: '), 
+
+Document(metadata={'section': 'function', 'name': 'load_data'}, page_content='Function: load_data\nArgs: []\nDocstring: '), 
+
+Document(metadata={'section': 'sql', 'index': 0}, page_content='SQL Query 1:\nCREATE TABLE IF NOT EXISTS booking_record (\n                    client_id INTEGER NOT NULL,\n                    booking_date TEXT NOT NULL,\n                    room_type TEXT(512) NOT NULL,\n                    hotel_id INTEGER NOT NULL,\n                    booking_cost NUMERIC,\n                    currency TEXT,\n                    age INTEGER,\n                    client_name TEXT(512),\n                    client_type TEXT(512),\n                    hotel_name TEXT(512)\n                );')]
