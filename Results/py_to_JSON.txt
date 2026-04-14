@@ -1,0 +1,43 @@
+{
+  "file_name": "CUSTOMER.py",
+  "module_docstring": "",
+  "imports": [
+    "from datetime import ...",
+    "from airflow import ...",
+    "from airflow.operators.python_operator import ...",
+    "from airflow.utils.dates import ...",
+    "pandas",
+    "sqlite3",
+    "os"
+  ],
+  "airflow_metadata": {
+    "dag": "ingestion_dag",
+    "schedule_interval": "timedelta",
+    "operators_used": [
+      "PythonOperator"
+    ],
+    "task_id": [
+      "transform_data",
+      "load_data"
+    ]
+  },
+  "functions": [
+    {
+      "name": "transform_data",
+      "args": [],
+      "docstring": "",
+      "line_number": 18
+    },
+    {
+      "name": "load_data",
+      "args": [],
+      "docstring": "",
+      "line_number": 45
+    }
+  ],
+  "sql_queries": [
+    "CREATE TABLE IF NOT EXISTS booking_record (\n                    client_id INTEGER NOT NULL,\n                    booking_date TEXT NOT NULL,\n                    room_type TEXT(512) NOT NULL,\n                    hotel_id INTEGER NOT NULL,\n                   
+ booking_cost NUMERIC,\n                    currency TEXT,\n                    age INTEGER,\n                    client_name TEXT(512),\n                    client_type TEXT(512),\n                    hotel_name TEXT(512)\n                );"
+  ],
+  "classes": []
+}
