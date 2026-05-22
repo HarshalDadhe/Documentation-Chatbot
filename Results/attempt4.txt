@@ -1,0 +1,134 @@
+**Airflow DAG Documentation**
+
+**DAG Name:** booking_record_dag
+
+**Description:** This DAG is responsible for loading data into the `booking_record` table in the database and transforming the data as needed.
+
+**Functions:**
+
+### load_data
+```python
+def load_data():
+    """
+    Loads data from an external source (e.g. CSV, JSON) into the booking_record table.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    # TO DO: implement data loading logic here
+```
+
+### transform_data
+```python
+def transform_data(data):
+    """
+    Transforms the loaded data by adding additional columns and performing any necessary data cleaning or formatting.
+
+    Args:
+        data (dict): The loaded data to be transformed.
+
+    Returns:
+        dict: The transformed data.
+    """
+    # TO DO: implement data transformation logic here
+```
+
+**SQL Query 1:**
+```sql
+CREATE TABLE IF NOT EXISTS booking_record (
+                    client_id INTEGER NOT NULL,
+                    booking_date TEXT NOT NULL,
+                    room_type TEXT(512) NOT NULL,
+                    hotel_id INTEGER NOT NULL,
+                    booking_cost NUMERIC,
+                    currency TEXT,
+                    age INTEGER,
+                    client_name TEXT(512),
+                    client_type TEXT(512),
+                    hotel_name TEXT(512)
+                );
+```
+
+**Tasks:**
+
+1. **load_data_task**
+```python
+load_data_task = BashOperator(
+    task_id='load_data',
+    bash_command='echo "Loading data..."'
+)
+```
+This task is responsible for loading the initial data into the `booking_record` table.
+
+2. **transform_data_task**
+```python
+transform_data_task = PythonOperator(
+    task_id='transform_data',
+    python_callable=transform_data,
+    op_kwargs={'data': None}
+)
+```
+This task is responsible for transforming the loaded data using the `transform_data` function.
+
+3. **load_and_transform_data_task**
+```python
+load_and_transform_data_task = ChainOperator(
+    tasks=[load_data_task, transform_data_task]
+)
+```
+This task is a combination of the above two tasks and runs them sequentially.
+
+**DAG Definition:**
+```python
+from datetime import datetime, timedelta
+from airflow import DAG
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2023, 1, 1),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    'booking_record_dag',
+    default_args=default_args,
+    schedule_interval='@daily'
+)
+
+load_and_transform_data_task >> dag
+```
+This defines the Airflow DAG with three tasks: `load_data`, `transform_data`, and `load_and_transform_data`. The DAG runs daily at midnight.
+
+**SQL Query 2:**
+```sql
+INSERT INTO booking_record (
+                    client_id,
+                    booking_date,
+                    room_type,
+                    hotel_id,
+                    booking_cost,
+                    currency,
+                    age,
+                    client_name,
+                    client_type,
+                    hotel_name
+                )
+VALUES (
+    <client_id>,
+    <booking_date>,
+    <room_type>,
+    <hotel_id>,
+    <booking_cost>,
+    <currency>,
+    <age>,
+    <client_name>,
+    <client_type>,
+    <hotel_name>
+);
+```
+This query is used to insert data into the `booking_record` table. The values for each column are replaced with placeholder values. 
