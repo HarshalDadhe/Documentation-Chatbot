@@ -1,0 +1,91 @@
+**Airflow DAG Documentation**
+
+**DAG Name:** Booking Record Management
+
+**Description:** This DAG is responsible for managing booking records by loading data from a database, transforming the data into a suitable format, and storing it in the database.
+
+**Function: load_data**
+
+* **Purpose:** Load data from an external source (e.g., CSV file) into the `booking_record` table.
+* **Args:** None
+* **Returns:** None
+* **Docstring:**
+    ```python
+def load_data():
+    """
+    Loads data from an external source into the booking_record table.
+
+    This function is responsible for retrieving data from a database or CSV file and storing it in the `booking_record` table.      
+    The data is then transformed to meet the required format.
+
+    Args:
+        None
+
+    Returns:
+        None
+```
+
+**Function: transform_data**
+
+* **Purpose:** Transform loaded data into a suitable format for storage in the `booking_record` table.
+* **Args:** None
+* **Docstring:**
+    ```python
+def transform_data():
+    """
+    Transforms loaded data into a suitable format for storage in the booking_record table.
+
+    This function takes the loaded data and applies necessary transformations to meet the requirements of the `booking_record` table.
+
+    Args:
+        None
+
+    Returns:
+        None
+```
+
+**SQL Query:**
+
+* **Create Table Statement:**
+    ```sql
+CREATE TABLE IF NOT EXISTS booking_record (
+                    client_id INTEGER NOT NULL,
+                    booking_date TEXT NOT NULL,
+                    room_type TEXT(512) NOT NULL,
+                    hotel_id INTEGER NOT NULL,
+                    booking_cost NUMERIC,
+                    currency TEXT,
+                    age INTEGER,
+                    client_name TEXT(512),
+                    client_type TEXT(512),
+                    hotel_name TEXT(512)
+                );
+```
+    This SQL query creates a new table named `booking_record` if it does not already exist. The table has 11 columns, each with its own data type and constraints.
+
+**DAG Tasks:**
+
+1. **Load Data:**
+    * Task Name: Load Booking Data
+    * Description: Loads data from an external source (e.g., CSV file) into the `booking_record` table.
+    * Trigger: Every day at 8am (triggered by Airflow's scheduler)
+2. **Transform Data:**
+    * Task Name: Transform Booking Records
+    * Description: Transforms loaded data into a suitable format for storage in the `booking_record` table.
+    * Trigger: After successful completion of Load Data task
+
+** Dag Flow:**
+
+1. The DAG is triggered every day at 8am.
+2. When triggered, the Load Data task executes and loads data from an external source (e.g., CSV file) into the `booking_record` table.
+3. Upon successful completion of the Load Data task, the Transform Data task executes and transforms the loaded data into a suitable format for storage in the `booking_record` table.
+
+**Example Use Case:**
+
+This DAG can be used to manage booking records for a hotel or resort. It can be triggered daily to load new booking data, transform it into a suitable format, and store it in the database. This ensures that the booking record table is always up-to-date and accurate.
+
+**Troubleshooting Tips:**
+
+* Check the Airflow logs to identify any errors or issues with the Load Data task.
+* Verify that the external source (e.g., CSV file) exists and contains valid data.
+* Review the Transform Data function to ensure it meets the requirements of the `booking_record` table.
